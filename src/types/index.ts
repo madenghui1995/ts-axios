@@ -9,8 +9,8 @@ export type Method =
   | 'HEAD'
   | 'put'
   | 'PUT'
-  | 'option'
-  | 'OPTION'
+  | 'options'
+  | 'OPTIONS'
   | 'patch'
   | 'PATCH'
 
