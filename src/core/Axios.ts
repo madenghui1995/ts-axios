@@ -2,7 +2,18 @@ import dispatchRequest from './dispatchRequest'
 import { Method, AxiosRequestConfig, AxiosPromise } from '../types/index'
 
 export default class Axios {
-  request(config: AxiosRequestConfig): AxiosPromise {
+  request(url: any, config?: any): AxiosPromise {
+    // 函数重载
+    if (typeof url === 'string') {
+      // 若传了 url，则需要将 url 放置到 config 里面
+      if (!config) {
+        config = {}
+      }
+      config.url = url
+    } else {
+      // 因为可能不传 url 的话，request 方法就传一个对象作为参数
+      config = url
+    }
     return dispatchRequest(config)
   }
 
