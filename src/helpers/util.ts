@@ -13,3 +13,11 @@ export function isObject(val: any): boolean {
 export function isPlainObject(val: any): boolean {
   return Object.prototype.toString.call(val) === '[object Object]'
 }
+
+// 将对象混合
+export function extend<T, U>(to: T, from: U): T & U {
+  for (let key in from) {
+    ;(to as T & U)[key] = from[key] as any
+  }
+  return to as T & U
+}
