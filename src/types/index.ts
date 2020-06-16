@@ -62,3 +62,16 @@ export interface AxiosInstance<T = any> extends Axios<T> {
   // 第二种是先传 url ,后传配置对象
   <T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T>
 }
+
+export interface AxiosInterceptorManagor<T> {
+  use(resolve: ResolveFn<T>, reject: RejectFn): number
+  eject(id: number): void
+}
+
+export interface ResolveFn<T> {
+  (val: T): T | null
+}
+
+export interface RejectFn {
+  (err: any): any
+}
