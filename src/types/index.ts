@@ -44,6 +44,10 @@ export interface AxiosError extends Error {
 }
 
 export interface Axios<T = any> {
+  interceptors: {
+    request: AxiosInterceptorManager<AxiosRequestConfig>,
+    response: AxiosInterceptorManager<AxiosResponse>
+  }
   request<T = any>(config?: AxiosRequestConfig): AxiosPromise<T>
   get<T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T>
   delete<T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T>
@@ -63,8 +67,8 @@ export interface AxiosInstance<T = any> extends Axios<T> {
   <T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T>
 }
 
-export interface AxiosInterceptorManagor<T> {
-  use(resolve: ResolveFn<T>, reject: RejectFn): number
+export interface AxiosInterceptorManager<T> {
+  use(resolve: ResolveFn<T>, reject?: RejectFn): number
   eject(id: number): void
 }
 

@@ -1,9 +1,30 @@
 import dispatchRequest from './dispatchRequest'
-import { Method, AxiosRequestConfig, AxiosPromise } from '../types/index'
+import { Method, AxiosRequestConfig, AxiosPromise, AxiosResponse } from '../types/index'
+import InterceptorManager from './InterceptorManager'
+import { ResolveFn, RejectFn } from '../types/index'
+
+interface Interceptor {
+  request: InterceptorManager<AxiosRequestConfig>
+  response: InterceptorManager<AxiosResponse>
+}
+
+interface PromiseChain<T> {
+  resolved: ResolveFn<T> | ((config: AxiosRequestConfig) => AxiosPromise)
+  rejected?: RejectFn
+}
 
 export default class Axios {
+  interceptors: Interceptor
+
+  constructor() {
+    this.interceptors = {
+      request: new InterceptorManager<AxiosRequestConfig>(),
+      response: new InterceptorManager<AxiosResponse>()
+    }
+  }
+
   request(url: any, config?: any): AxiosPromise {
-    // 函数重载哈哈
+    // 函数重载
     if (typeof url === 'string') {
       // 若传了 url，则需要将 url 放置到 config 里面
       if (!config) {
@@ -14,7 +35,31 @@ export default class Axios {
       // 因为可能不传 url 的话，request 方法就传一个对象作为参数
       config = url
     }
-    return dispatchRequest(config)
+
+    const chain: PromiseChain<any>[] = [
+      {
+        resolved: dispatchRequest,
+        rejected: undefined
+      }
+    ]
+
+    this.interceptors.request.forEach(interceptor => {
+      chain.unshift(interceptor)
+    })
+
+    this.interceptors.response.forEach(interceptor => {
+      chain.push(interceptor)
+    })
+
+    let promise = Promise.resolve(config)
+
+    while(chain.length) {
+      const { resolved, rejected } = chain.shift()!
+      promise = promise.then(resolved, rejected)
+    }
+
+    // return dispatchRequest(config)
+    return promise
   }
 
   get(url: string, config?: AxiosRequestConfig): AxiosPromise {
