@@ -3,7 +3,7 @@ import { Method, AxiosRequestConfig, AxiosPromise } from '../types/index'
 
 export default class Axios {
   request(url: any, config?: any): AxiosPromise {
-    // 函数重载
+    // 函数重载哈哈
     if (typeof url === 'string') {
       // 若传了 url，则需要将 url 放置到 config 里面
       if (!config) {
