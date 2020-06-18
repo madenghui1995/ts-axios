@@ -1,3 +1,5 @@
+import { Method } from '../types/index'
+
 const toString = Object.prototype.toString
 
 export function isDate(val: any): boolean {
@@ -44,4 +46,25 @@ export function deepMerge(...objs: any[]): any {
   })
 
   return result
+}
+
+// 合并 headers
+// 因为 headers 返回的是
+// headers = {
+//   common: {'Accept': 'application/json'},
+//   post: {'Content-Type': 'x-www-urlencoded'}
+// }
+// 要将其变为
+// headers = {
+//   'Accept': 'application/json',
+//   'Content-Type': 'x-www-urlencoded'
+// }
+
+export function mergeHeaders(headers: any, method: Method): any {
+  headers = deepMerge(headers.common, headers[method], headers)
+  const deleteMethods = ['delete', 'put', 'post', 'get', 'patch', 'head', 'options', 'common']
+  deleteMethods.forEach(method => {
+    delete headers[method]
+  })
+  return headers
 }

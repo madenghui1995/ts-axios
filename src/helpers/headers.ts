@@ -10,7 +10,6 @@ function normalizeHeaderName(headers: any, normalizedName: string): any {
       delete headers[name]
     }
   })
-  return headers
 }
 
 export function processHeaders(headers: any, data: any): any {
