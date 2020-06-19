@@ -4,9 +4,11 @@ import { parseHeader } from '../helpers/headers'
 
 import { createError } from '../helpers/error'
 
+import CancelToken from '../cancel/CancelToken'
+
 export default function xhr(config: AxiosRequestConfig): AxiosPromise {
   return new Promise((resolve, reject) => {
-    const { url, method = 'get', data = null, headers, responseType, timeout } = config
+    const { url, method = 'get', data = null, headers, responseType, timeout, cancelToken } = config
     const request = new XMLHttpRequest()
 
     // 参数说明 xhrReq.open(method, url, async, user, password);
@@ -63,6 +65,16 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
         } else {
           request.setRequestHeader(name, headers[name])
         }
+      })
+    }
+
+    // 使用 promise 进行异步分离，让 promise从pending状态转换为resolved状态，即可停止请求
+    if (cancelToken) {
+      cancelToken.promise.then(reason => {
+        // 停止请求
+        // xhr 里使用abort（）来停止请求
+        request.abort()
+        reject(reason)
       })
     }
 
