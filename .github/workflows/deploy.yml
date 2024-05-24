@@ -10,6 +10,7 @@ on:
       - 'bin/*'
       - 'package.json'
 
+# 测试学习代码
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -29,3 +30,37 @@ jobs:
 
       - name: delete a file
         run: rm -rf a.txt
+
+# 自动发布到服务器的代码
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+
+#   steps:
+#     - uses: actions/checkout@v2 # 第三方的 action
+
+#     - name: set id_rsa # 设置 id_rsa
+#       run: |
+#         mkdir -p ~/.ssh/
+#         echo "${{srcrets.MY_ID_RSA}}" > ~/.ssh/id_rsa
+#         chmod 600 ~/.ssh/id_rsa
+#         ssk-keyscan 124.124.59.115 >> ~/.ssh/known_hosts
+    
+#     - name: deploy # 自动发布
+#       # | 这个符号，可以写多行命令， ssh 进入服务器后，后面的""，是可以写命令的，多个命令，就用分号隔开
+#       run: |
+#         ssh root@124.124.59.115 "
+#           # 注意：服务器已经 git clone 代码到 /root/myblog/imooc-320-server 目录
+
+#           cd /root/myblog/imooc-320-server;
+#           git checkout . ;
+#           git checkout master;
+#           git pull origin master; # 重新下载最新的代码
+
+#           # 重启服务
+#           npm install;
+#           npm run prd;
+#         "
+
+#     - name: delete id_rsa # 删除 id_rsa
+#       run: rm -rf ~/.ssh/id_rsa
