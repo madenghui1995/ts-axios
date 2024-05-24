@@ -1,0 +1,31 @@
+name: deploy myaxios
+
+on:
+  push:
+    branches:
+      - 'master' # 针对 master 分支
+    paths:
+      - '.github/workflows/*'
+      - 'src/*'
+      - 'bin/*'
+      - 'package.json'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2 # 第三方的 action
+
+      - name: create a folder
+        run: mkdir test-folder
+
+      - name: create a file
+        run: |
+          cd test-folder
+          touch a.txt
+          echo "heloow madh" > a.txt
+          cat a.txt
+
+      - name: delete a file
+        run: rm -rf a.txt
